@@ -1,6 +1,6 @@
 #pragma once
 
-#if defined(_DEBUG)
+// #if defined(_DEBUG)
 #include <iostream>
 #include <mutex>
 static std::mutex coutMutex;
@@ -10,7 +10,7 @@ static std::mutex coutMutex;
     std::lock_guard<std::mutex> lock(coutMutex); \
     std::cout << msg << std::endl;               \
   } while (0)
-#endif
+// #endif
 
 #include <cbmpc/core/macros.h>
 
