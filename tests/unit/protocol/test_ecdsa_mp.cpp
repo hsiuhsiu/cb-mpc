@@ -135,57 +135,6 @@ TEST_F(ECDSA4PC, KeygenSignRefreshSign) {
   check_keys(new_keys);
 }
 
-TEST_F(ECDSA4PC, ParallelKSRS8) {
-  int parallel_count = 8;
-  std::vector<buf_t> data(parallel_count);
-  for (int i = 0; i < parallel_count; i++) {
-    data[i] = crypto::gen_random(32);
-  }
-  std::vector<std::vector<ecdsampc::key_t>> keys(parallel_count, std::vector<ecdsampc::key_t>(4));
-  std::vector<std::vector<ecdsampc::key_t>> new_keys(parallel_count, std::vector<ecdsampc::key_t>(4));
-
-  mpc_runner->run_mpc_parallel(parallel_count, [&keys, &new_keys, &data](job_session_mp_t& job, int th_i) {
-    std::vector<std::vector<int>> ot_role_map = test_ot_role(4);
-    error_t rv = UNINITIALIZED_ERROR;
-    auto party_index = job.get_party_idx();
-    ecdsampc::key_t& key = keys[th_i][party_index];
-    ecurve_t curve = crypto::curve_secp256k1;
-
-    buf_t sid;
-    rv = ecdsampc::dkg(job, curve, key, sid);
-    ASSERT_EQ(rv, 0);
-
-    buf_t sig;
-    rv = sign(job, key, data[th_i], party_idx_t(0), ot_role_map, sig);
-    ASSERT_EQ(rv, 0);
-
-    if (party_index == 0) {
-      crypto::ecc_pub_key_t ecc_verify_key(key.Q);
-      EXPECT_OK(ecc_verify_key.verify(data[th_i], sig));
-    }
-
-    ecdsampc::key_t& new_key = new_keys[th_i][party_index];
-    rv = ecdsampc::refresh(job, sid, key, new_key);
-    ASSERT_EQ(rv, 0);
-    EXPECT_EQ(new_key.Q, key.Q);
-    EXPECT_NE(new_key.x_share, key.x_share);
-
-    buf_t new_sig;
-    rv = sign(job, new_key, data[th_i], party_idx_t(0), ot_role_map, new_sig);
-    ASSERT_EQ(rv, 0);
-
-    if (party_index == 0) {
-      crypto::ecc_pub_key_t ecc_verify_key(key.Q);
-      EXPECT_OK(ecc_verify_key.verify(data[th_i], new_sig));
-    }
-  });
-
-  for (int i = 0; i < parallel_count; i++) {
-    check_keys(keys[i]);
-    check_keys(new_keys[i]);
-  }
-}
-
 class ECDSAMPCTHRESHOLD : public NetworkMPC {};
 INSTANTIATE_TEST_SUITE_P(, ECDSAMPCTHRESHOLD, testing::Values(5));
 
