@@ -38,7 +38,7 @@ TEST_F(Network2PC, BasicMessaging) {
   });
 }
 
-typedef std::function<void(job_session_2p_t& job)> lambda_2p_t;
+typedef std::function<void(job_2p_t& job)> lambda_2p_t;
 
 TEST_F(Network4PC, BasicBroadcast) {
   mpc_runner->run_mpc([](job_mp_t& job) {

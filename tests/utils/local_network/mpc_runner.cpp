@@ -35,40 +35,37 @@ void mpc_runner_t::init_network(int n_parties) {
 mpc_runner_t::mpc_runner_t(int n_parties) : n(n_parties) {
   if (n == 2) {
     init_network(2);
-    job_2ps[0] = std::make_shared<job_session_2p_t>(party_t::p1, test_pnames[0], test_pnames[1],
-                                                    std::make_shared<network_t>(get_data_transport_ptr(0)), 0);
-    job_2ps[1] = std::make_shared<job_session_2p_t>(party_t::p2, test_pnames[0], test_pnames[1],
-                                                    std::make_shared<network_t>(get_data_transport_ptr(1)), 0);
+    job_2ps[0] = std::make_shared<job_2p_t>(party_t::p1, test_pnames[0], test_pnames[1], get_data_transport_ptr(0));
+    job_2ps[1] = std::make_shared<job_2p_t>(party_t::p2, test_pnames[0], test_pnames[1], get_data_transport_ptr(1));
   } else {
     if (n == -2) n = 2;
     init_network(n);
     std::vector<crypto::pname_t> pnames(test_pnames.begin(), test_pnames.begin() + n);
     for (int i = 0; i < n; i++) {
-      job_mps[i] = std::make_shared<job_session_mp_t>(party_idx_t(i), pnames,
-                                                      std::make_shared<network_t>(get_data_transport_ptr(i)), 0);
+      job_mps[i] = std::make_shared<job_mp_t>(party_idx_t(i), pnames, get_data_transport_ptr(i));
     }
   }
 }
 
 void mpc_runner_t::set_new_network_2p() {
-  job_2ps[0]->set_network(party_t::p1, std::make_shared<network_t>(get_data_transport_ptr(0)));
-  job_2ps[1]->set_network(party_t::p2, std::make_shared<network_t>(get_data_transport_ptr(1)));
+  job_2ps[0]->set_transport(party_idx_t(party_t::p1), get_data_transport_ptr(0));
+  job_2ps[1]->set_transport(party_idx_t(party_t::p2), get_data_transport_ptr(1));
 }
 
 void mpc_runner_t::set_new_network_mp() {
   for (int i = 0; i < n; i++) {
-    job_mps[i]->set_network(party_idx_t(i), std::make_shared<network_t>(get_data_transport_ptr(i)));
+    job_mps[i]->set_transport(party_idx_t(i), get_data_transport_ptr(i));
   }
 }
 
-mpc_runner_t::mpc_runner_t(std::shared_ptr<job_session_2p_t> job1, std::shared_ptr<job_session_2p_t> job2) : n(2) {
+mpc_runner_t::mpc_runner_t(std::shared_ptr<job_2p_t> job1, std::shared_ptr<job_2p_t> job2) : n(2) {
   init_network(n);
   job_2ps[0] = job1;
   job_2ps[1] = job2;
   set_new_network_2p();
 }
 
-mpc_runner_t::mpc_runner_t(std::vector<std::shared_ptr<job_session_mp_t>> jobs) : n(jobs.size()) {
+mpc_runner_t::mpc_runner_t(std::vector<std::shared_ptr<job_mp_t>> jobs) : n(jobs.size()) {
   init_network(n);
   for (int i = 0; i < n; i++) {
     job_mps[i] = jobs[i];

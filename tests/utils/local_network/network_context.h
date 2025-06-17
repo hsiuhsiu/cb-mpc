@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cbmpc/crypto/base.h>
-#include <cbmpc/protocol/mpc_job_session.h>
+#include <cbmpc/protocol/mpc_job.h>
 
 #include "channel.h"
 
