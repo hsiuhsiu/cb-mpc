@@ -23,7 +23,7 @@ using node_e = coinbase::crypto::ss::node_e;
 
 // ============ ECDSA 2PC =============
 int mpc_ecdsa2p_dkg(JOB_SESSION_2P_PTR* j, int curve_code, MPC_ECDSA2PC_KEY_PTR* k) {
-  job_session_2p_t* job = static_cast<job_session_2p_t*>(j->opaque);
+  job_parallel_2p_t* job = static_cast<job_parallel_2p_t*>(j->opaque);
   ecurve_t curve = ecurve_t::find(curve_code);
 
   ecdsa2pc::key_t* key = new ecdsa2pc::key_t();
@@ -36,7 +36,7 @@ int mpc_ecdsa2p_dkg(JOB_SESSION_2P_PTR* j, int curve_code, MPC_ECDSA2PC_KEY_PTR*
 }
 
 int mpc_ecdsa2p_refresh(JOB_SESSION_2P_PTR* j, MPC_ECDSA2PC_KEY_PTR* k, MPC_ECDSA2PC_KEY_PTR* nk) {
-  job_session_2p_t* job = static_cast<job_session_2p_t*>(j->opaque);
+  job_parallel_2p_t* job = static_cast<job_parallel_2p_t*>(j->opaque);
 
   ecdsa2pc::key_t* key = static_cast<ecdsa2pc::key_t*>(k->opaque);
   ecdsa2pc::key_t* new_key = new ecdsa2pc::key_t();
@@ -49,7 +49,7 @@ int mpc_ecdsa2p_refresh(JOB_SESSION_2P_PTR* j, MPC_ECDSA2PC_KEY_PTR* k, MPC_ECDS
 }
 
 int mpc_ecdsa2p_sign(JOB_SESSION_2P_PTR* j, cmem_t sid, MPC_ECDSA2PC_KEY_PTR* k, cmems_t msgs, cmems_t* sigs) {
-  job_session_2p_t* job = static_cast<job_session_2p_t*>(j->opaque);
+  job_parallel_2p_t* job = static_cast<job_parallel_2p_t*>(j->opaque);
   ecdsa2pc::key_t* key = static_cast<ecdsa2pc::key_t*>(k->opaque);
   buf_t session_id = mem_t(sid);
   std::vector<mem_t> messages = coinbase::mems_t(msgs).mems();
@@ -64,7 +64,7 @@ int mpc_ecdsa2p_sign(JOB_SESSION_2P_PTR* j, cmem_t sid, MPC_ECDSA2PC_KEY_PTR* k,
 
 // ============ ECDSA MPC ==============
 int mpc_ecdsampc_dkg(JOB_SESSION_MP_PTR* j, int curve_code, MPC_ECDSAMPC_KEY_PTR* k) {
-  job_session_mp_t* job = static_cast<job_session_mp_t*>(j->opaque);
+  job_parallel_mp_t* job = static_cast<job_parallel_mp_t*>(j->opaque);
   ecurve_t curve = ecurve_t::find(curve_code);
 
   ecdsampc::key_t* key = new ecdsampc::key_t();
@@ -79,7 +79,7 @@ int mpc_ecdsampc_dkg(JOB_SESSION_MP_PTR* j, int curve_code, MPC_ECDSAMPC_KEY_PTR
 
 int mpc_ecdsampc_sign(JOB_SESSION_MP_PTR* j, MPC_ECDSAMPC_KEY_PTR* k, cmem_t msg_mem, int sig_receiver,
                       cmem_t* sig_mem) {
-  job_session_mp_t* job = static_cast<job_session_mp_t*>(j->opaque);
+  job_parallel_mp_t* job = static_cast<job_parallel_mp_t*>(j->opaque);
   ecdsampc::key_t* key = static_cast<ecdsampc::key_t*>(k->opaque);
 
   buf_t msg = coinbase::mem_t(msg_mem);
@@ -129,7 +129,7 @@ int eckey_dkg_mp_threshold_dkg(
     PARTY_SET_PTR* quorum, 
     MPC_ECDSAMPC_KEY_PTR* key) {
   
-  job_session_mp_t* job_session = static_cast<job_session_mp_t*>(job->opaque);
+  job_parallel_mp_t* job_session = static_cast<job_parallel_mp_t*>(job->opaque);
   ecurve_t curve_obj = ecurve_t::find(curve);
   buf_t sid_buf = mem_t(sid);
   crypto::ss::ac_t* ac_obj = static_cast<crypto::ss::ac_t*>(ac->opaque);
@@ -180,7 +180,7 @@ int mpc_ecdsampc_sign_with_ot_roles(
     int n_parties,
     cmem_t* sig_mem) {
   
-  job_session_mp_t* job = static_cast<job_session_mp_t*>(j->opaque);
+  job_parallel_mp_t* job = static_cast<job_parallel_mp_t*>(j->opaque);
   eckey::key_share_mp_t* key = static_cast<eckey::key_share_mp_t*>(k->opaque);
   
   buf_t msg = coinbase::mem_t(msg_mem);

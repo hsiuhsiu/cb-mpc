@@ -144,7 +144,7 @@ TEST_F(ECDSA4PC, ParallelKSRS8) {
   std::vector<std::vector<ecdsampc::key_t>> keys(parallel_count, std::vector<ecdsampc::key_t>(4));
   std::vector<std::vector<ecdsampc::key_t>> new_keys(parallel_count, std::vector<ecdsampc::key_t>(4));
 
-  mpc_runner->run_mpc_parallel(parallel_count, [&keys, &new_keys, &data](job_session_mp_t& job, int th_i) {
+  mpc_runner->run_mpc_parallel(parallel_count, [&keys, &new_keys, &data](job_parallel_mp_t& job, int th_i) {
     std::vector<std::vector<int>> ot_role_map = test_ot_role(4);
     error_t rv = UNINITIALIZED_ERROR;
     auto party_index = job.get_party_idx();

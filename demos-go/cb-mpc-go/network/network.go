@@ -242,7 +242,7 @@ func (js *JobSessionMP) GetCJob() *C.JOB_SESSION_MP_PTR {
 	return js.cJob
 }
 
-func NewJobSessionMP(dt IDataTransport, partyCount int, roleIndex int, jobSessionId int, pnames []string) JobSessionMP {
+func NewJobSessionMP(dt IDataTransport, partyCount int, roleIndex int, parallelId int, pnames []string) JobSessionMP {
 	if len(pnames) != partyCount {
 		panic("NewJobSessionMP requires pnames array length to match partyCount")
 	}
@@ -263,7 +263,7 @@ func NewJobSessionMP(dt IDataTransport, partyCount int, roleIndex int, jobSessio
 		cPnamesSlice[i] = unsafe.Pointer(cStr)
 	}
 
-	return JobSessionMP{ptr.(unsafe.Pointer), C.new_job_session_mp(&callbacks, ptr.(unsafe.Pointer), C.int(partyCount), C.int(roleIndex), C.int(jobSessionId), (**C.char)(cPnamesArray), C.int(len(pnames)))}
+        return JobSessionMP{ptr.(unsafe.Pointer), C.new_job_session_mp(&callbacks, ptr.(unsafe.Pointer), C.int(partyCount), C.int(roleIndex), C.int(parallelId), (**C.char)(cPnamesArray), C.int(len(pnames)))}
 }
 
 func (js *JobSessionMP) Free() {
