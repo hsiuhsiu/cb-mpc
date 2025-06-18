@@ -44,10 +44,6 @@ Although this library is designed for general use, we have included examples sho
 
 1. **HD-MPC**: This is the MPC version of an HD-Wallet where the keys are derived according to an HD tree. The library contains the source code for how to generate keys and also to derive keys for the tree (see [src/cbmpc/protocol/hd_keyset_ecdsa_2p.cpp](src/cbmpc/protocol/hd_keyset_ecdsa_2p.cpp)). This can be used to perform a batch ECDSA signature or sequential signatures as shown in the test file, [tests/unit/protocol/test_hdmpc_ecdsa_2p.cpp](tests/unit/protocol/test_hdmpc_ecdsa_2p.cpp). We stress that this is not BIP32-compliant, but is indistinguishable from it; more details can be found in [docs/theory/mpc-friendly-derivation-theory.pdf](docs/theory/mpc-friendly-derivation-theory.pdf).
 2. **ECDSA-MPC with Threshold EC-DKG**: This example showcases how a threshold of parties (or more generally any quorum of parties according to a given access structure) can perform ECDSA-MPC. The code can be found in [src/cbmpc/protocol/ec_dkg.cpp](src/cbmpc/protocol/ec_dkg.cpp) and its usage can be found in [tests/unit/protocol/test_ecdsa_mp.cpp](tests/unit/protocol/test_ecdsa_mp.cpp).
-3. **ECDSA-MPC with Threshold Backup**: This example showcases various things. First, the code is in Go, [demos-go/examples/ecdsa-mpc-with-backup/main.go](demos-go/examples/ecdsa-mpc-with-backup/main.go) and therefore showcases how the C++ core library can be used in a Go project. Second, it showcases how different protocols can be combined to create a full solution. In this case, we use PVE (publicly-verifiable encryption) as a way of creating verifiable backup of keyshares according to an access structure (e.g., a threshold of `t` out of `n` parties). The code shows how the backup can be created and restored. It also shows how the backup can be used to generate a signature. Note that the key generation can be done using the threshold EC-DKG protocol, which is showcased in the previous example. However, for simplicity a normal additive DKG is used in this example.
-4. **Various other uses cases, including ZKPs**: The demo code under [demos-cpp](demos-cpp) and [demos-go](demos-go), and the tests under [tests](tests), contain various examples of how the different protocols can be used. Specifically, for the case of ZKPs, the tests can be found under [tests/unit/zk/test_zk.cpp](tests/unit/zk/test_zk.cpp).
-
-The library comes with various tests and checks to increase the confidence in the code including:
 
 - Constant time tests: See `make dudect`
 - Unit tests: See `make test`
@@ -59,11 +55,6 @@ The library comes with various tests and checks to increase the confidence in th
 - `docs`: the pdf files that define the detailed cryptographic specification and theoretical documentation (you need to enable git-lfs to get them)
 - `src`: contains the cpp library and its unit tests
 - `cb-mpc-go`: contains an example of how a go wrapper for the cpp library can be written
-- `demos-cpp`: a collection of examples of common use cases in c++
-- `demos-go`: examples of how the c++ library can be used in Golang
-  - `demos/cb-mpc-go`: Go wrapper of the cb-mpc
-  - `demos/mocknet`: an example of how a network infra can be implemented (for demo purposes)
-  - `demos/examples`: examples of some multiparty computation tasks in Golang
 - `scripts`: a collection of scripts used by the Makefile
 - `tools/benchmark`: a collection of benchmarks for the library
 - `tests/{dudect,integration,unit}`: a collection of tests for the library
@@ -122,16 +113,6 @@ To test the library, run
 
 `make test`
 
-To run the demos and benchmarks, you first need to install the library:
-
-`sudo make install`
-
-This will copy the `.a` files and header files to `/usr/local/opt/cbmpc/lib`
-
-To run the demos (both cpp and go), run
-
-`make demos`
-
 To run the benchmarks, run
 
 `make bench`
@@ -142,7 +123,6 @@ Finally, to clean up, run
 
 ```bash
 make clean
-make clean-demos
 ```
 
 To use `clang-format` to lint, we use the clang-format version 14.
